@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.3.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico?v=6.3.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.3.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.3.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.3.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="关系数据库入门关系数据库概述 数据持久化 - 将数据保存到能够长久保存数据的存储介质中，在掉电的情况下数据也不会丢失。   将数据写入到文件；缺点：不方便取出数据和查找数据 。 用Excel表格；缺点：不方便查找和修改数据。 数据库管理系统   数据库 - 数据的集散地（仓库）  优点：不仅可以保存数据，更重要的是能够很好的管理数据，方便将来对数据的检索，大多数的数据库都能够保证数据的一致性、完整">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关系数据库入门">
+<meta property="og:url" content="http://yoursite.com/2019/12/21/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name">
+<meta property="og:description" content="关系数据库入门关系数据库概述 数据持久化 - 将数据保存到能够长久保存数据的存储介质中，在掉电的情况下数据也不会丢失。   将数据写入到文件；缺点：不方便取出数据和查找数据 。 用Excel表格；缺点：不方便查找和修改数据。 数据库管理系统   数据库 - 数据的集散地（仓库）  优点：不仅可以保存数据，更重要的是能够很好的管理数据，方便将来对数据的检索，大多数的数据库都能够保证数据的一致性、完整">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-12-21T08:56:15.121Z">
+<meta property="article:modified_time" content="2019-12-03T03:03:50.145Z">
+<meta property="article:author" content="YK Liu">
+<meta name="twitter:card" content="summary">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/12/21/关系数据库入门/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>关系数据库入门 | </title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title"></span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br />分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />归档</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/21/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="YK Liu">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">关系数据库入门
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-21 16:56:15" itemprop="dateCreated datePublished" datetime="2019-12-21T16:56:15+08:00">2019-12-21</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-12-03 11:03:50" itemprop="dateModified" datetime="2019-12-03T11:03:50+08:00">2019-12-03</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-symbolscount">
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">本文字数：</span>
+                
+                <span title="本文字数">24k</span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">21 分钟</span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="关系数据库入门"><a href="#关系数据库入门" class="headerlink" title="关系数据库入门"></a>关系数据库入门</h2><h3 id="关系数据库概述"><a href="#关系数据库概述" class="headerlink" title="关系数据库概述"></a>关系数据库概述</h3><ol>
+<li>数据持久化 - 将数据保存到能够长久保存数据的存储介质中，在掉电的情况下数据也不会丢失。</li>
+</ol>
+<ul>
+<li>将数据写入到文件；缺点：不方便取出数据和查找数据 。</li>
+<li>用Excel表格；缺点：不方便查找和修改数据。</li>
+<li>数据库管理系统</li>
+</ul>
+<ol start="2">
+<li><p>数据库 - 数据的集散地（仓库）<br>  优点：不仅可以保存数据，更重要的是能够很好的管理数据，方便将来对数据的检索，大多数的数据库都能够保证数据的一致性、完整性并减少数据的冗余</p>
+</li>
+<li><p>数据库发展史 -  网状数据库、层次数据库、关系数据库、NoSQL数据库。</p>
+</li>
+</ol>
+<blockquote>
+<p>1970s，IBM的研究员E.F.Codd在Communication of the ACM上发表了名为A Relational Model of Data for Large Shared Data Banks的论文，提出了关系模型的概念，奠定了关系模型的理论基础。后来Codd又陆续发表多篇文章，论述了范式理论和衡量关系系统的12条标准，用数学理论奠定了关系数据库的基础。</p>
+</blockquote>
+<ol start="4">
+<li>关系数据库的特点</li>
+</ol>
+<ul>
+<li>理论基础：集合论和关系代数。</li>
+<li>具体表象：用二维表（行 - 记录  列 - 字段）组织数据。</li>
+<li>理论基础：集合论和关系代数。</li>
+</ul>
+<h3 id="MySQL简介"><a href="#MySQL简介" class="headerlink" title="MySQL简介"></a>MySQL简介</h3><p>MySQL最早是由瑞典的MySQL AB公司开发的一个开放源码的关系数据库管理系统，该公司于2008年被昇阳微系统公司（Sun Microsystems）收购。在2009年，甲骨文公司（Oracle）收购昇阳微系统公司，因此在这之后MySQL成为了Oracle旗下产品。</p>
+<p>MySQL在过去由于性能高、成本低、可靠性好，已经成为最流行的开源数据库，因此被广泛地应用于中小型网站开发。随着MySQL的不断成熟，它也逐渐被应用于更多大规模网站和应用，比如维基百科、谷歌（Google）、脸书（Facebook）、淘宝网等网站都使用了MySQL来提供数据持久化服务。</p>
+<p>甲骨文公司收购后昇阳微系统公司，大幅调涨MySQL商业版的售价，且甲骨文公司不再支持另一个自由软件项目OpenSolaris的发展，因此导致自由软件社区对于Oracle是否还会持续支持MySQL社区版（MySQL的各个发行版本中唯一免费的版本）有所担忧，MySQL的创始人麦克尔·维德纽斯以MySQL为基础，成立分支计划MariaDB（以他女儿的名字命名的数据库）。有许多原来使用MySQL数据库的公司（例如：维基百科）已经陆续完成了从MySQL数据库到MariaDB数据库的迁移。</p>
+<p><strong>安装和配置</strong>（在CentOS7 Linux环境下）</p>
+<ul>
+<li>MySQL有一个分支版本名叫MariaDB，它们的底层库是冲突的，要安装MySQL,必须先保证系统中没有MariaDB相关的文件。如果系统上有MariaDB相关的文件，需要先移除MariaDB相关的文件。</li>
+</ul>
+<p><code>yum list installed | grep mariadb | awk &#39;{print $1}&#39; | xargs yum erase -y</code></p>
+<ul>
+<li>下载</li>
+</ul>
+<p><code>wget https://dev.mysql.com/get/Downloads/MySQL-5.7/mysql-5.7.26-1.el7.x86_64.rpm-bundle.tar</code></p>
+<ul>
+<li>解归档</li>
+</ul>
+<p><code>tar -xvf mysql-5.7.26-1.el7.x86_64.rpm-bundle.tar</code></p>
+<ul>
+<li>接下来可以按照如下所示的顺序用RPM（Redhat Package Manager）工具安装MySQL。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh mysql-community-common-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-libs-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-client-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-server-5.7.26-1.el7.x86_64.rpm</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>接下来启动MySQL服务器</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">启动服务器：</span><br><span class="line">systemctl start mysqld &#x2F; service mysqld start</span><br><span class="line">关闭服务器：</span><br><span class="line">systemctl stop mysqld &#x2F; service mysqld stop</span><br><span class="line">重启服务器：</span><br><span class="line">systemctl restart mysqld</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>查看运行状态和网络状态</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">systemctl status mysqld</span><br><span class="line">netstat -ntlp | grep mysql</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在日志文件中找出root用户的临时密码</li>
+</ul>
+<p><code>cat /var/log/mysqld.log | grep &quot;A temporary password&quot;</code></p>
+<ul>
+<li>通过MySQL客户端工具连接服务器</li>
+</ul>
+<p><code>mysql -uroot -p</code></p>
+<ul>
+<li>输入临时密码进入，此时不能做任何事情，因为MySQL默认必须修改密码之后才能操作数据库：</li>
+</ul>
+<p><code>ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;新密码&#39;;</code></p>
+<p>这里有个问题，新密码设置的时候如果设置的过于简单会报错；原因是因为MySQL有密码设置的规范，具体是与validate_password_policy的值有关，可以降低密码强度。</p>
+<ul>
+<li><p>密码强度设为最低，长度为6，就可以修改密码了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">set global validate_password_policy&#x3D;0;</span><br><span class="line">set global validate_password_length&#x3D;6;</span><br><span class="line">ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;新密码&#39;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时的root用户是没有权限的，接下来创建远程连接用户并赋予用户权限</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create user &#39;root&#39;@&#39;%&#39; identified by &#39;123456&#39;;</span><br><span class="line">grant all privileges on *.* to &#39;root&#39;@&#39;%&#39; with grant option;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>刷新权限</li>
+</ul>
+<p><code>flush privileges;</code></p>
+<p><strong>常用命令</strong></p>
+<ul>
+<li>查看服务器版本</li>
+</ul>
+<p><code>select version();</code></p>
+<ul>
+<li>查看当前所有数据库</li>
+</ul>
+<p><code>show databases;</code></p>
+<ul>
+<li>切换到指定数据库</li>
+</ul>
+<p><code>use 数据库名;</code></p>
+<ul>
+<li>查看当前数据库下所有表</li>
+</ul>
+<p><code>show tables;</code></p>
+<ul>
+<li>查看当前使用的数据库</li>
+</ul>
+<p><code>select database();</code></p>
+<ul>
+<li>查看当前版本</li>
+</ul>
+<p><code>select version();</code></p>
+<ul>
+<li>查看当前时间</li>
+</ul>
+<p><code>select now();</code></p>
+<ul>
+<li>显示数据库的创建和数据表的创建</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">show create database 数据库名;</span><br><span class="line">show create table 数据表名;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取帮助</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">? contents;</span><br><span class="line">? functions;</span><br><span class="line">? numeric functions;</span><br><span class="line">? round;</span><br><span class="line"></span><br><span class="line">? data types;</span><br><span class="line">? longblob;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="SQL详解"><a href="#SQL详解" class="headerlink" title="SQL详解"></a>SQL详解</h3><p><strong>基本操作</strong></p>
+<p>我们通常可以将SQL分为三类：DDL（数据定义语言）、DML（数据操作语言）和DCL（数据控制语言）。<br>DDL主要用于创建（create）、删除（drop）、修改（alter）数据库中的对象，比如创建、删除和修改二维表；<br>DML主要负责插入数据（insert）、删除数据（delete）、更新数据（update）和查询（select）；<br>DCL通常用于授予权限（grant）和召回权限（revoke）。</p>
+<blockquote>
+<p>说明：SQL是不区分大小写的语言</p>
+</blockquote>
+<ol>
+<li><p>DDL</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">-- 0. 删除数据库: drop database 数据库名;</span><br><span class="line">DROP DATABASE school;   -- 直接删除指定数据库</span><br><span class="line">DROP DATABASE if EXISTS school;   -- 如果指定的数据库存在就删除数据库</span><br><span class="line"></span><br><span class="line">-- 1.创建数据库: create database 数据库名;</span><br><span class="line">create database school;  -- 直接创建指定数据库</span><br><span class="line"></span><br><span class="line">CREATE database if not EXISTS school;  </span><br><span class="line">-- 当指定数据库不存在的时候才创建数据库</span><br><span class="line"></span><br><span class="line">create database if not EXISTS school default charset utf8;   </span><br><span class="line">-- 创建数据库的时候设置字符集编码方式为utf8,让数据库支持中文数据的存储</span><br><span class="line"></span><br><span class="line">-- 2.使用&#x2F;切换&#x2F;数据库: use 数据库名;</span><br><span class="line">use school;</span><br><span class="line"></span><br><span class="line">-- 3.新建表: create table if not exists 表名(字段名1 类型1, 字段2 类型2,...);</span><br><span class="line">-- 注意： a. 表名一般需要加前缀&#39;t&#39;或者&#39;tb&#39;    </span><br><span class="line">		 b.字段用来确定表中要存储哪些数据，字段名随便命名但是不能是关键字  </span><br><span class="line">		 c.数据类型必须是MySQL支持的数据类型</span><br><span class="line"></span><br><span class="line">-- 常用数据类型: int-整数, char(size)-定长字符串, varchar(size)-不定长字符串, text-字符串, bit-布尔, date-日期</span><br><span class="line"></span><br><span class="line">CREATE TABLE if not EXISTS t_student(stuid int, stuname varchar(20), gender bit, birth date);  </span><br><span class="line"></span><br><span class="line">-- 新建表并且添加约束: create table if not exists 表名(字段名1 类型1 约束1, 字段2 类型2 约束2,...);</span><br><span class="line"></span><br><span class="line">-- 常见约束: not null - 不为空,  default  - 设置默认值,  unique - 值唯一,  primary key - 主键约束 </span><br><span class="line"></span><br><span class="line">-- 主键约束:  主键的值可以确定列表中唯一一条记录(通过一个主键值可以找到表中的唯一一条记录)</span><br><span class="line"></span><br><span class="line">-- 注意: auto_increment只针对主键有效,并且主键的类型是整型;</span><br><span class="line"></span><br><span class="line">CREATE TABLE if not EXISTS t_student</span><br><span class="line">(</span><br><span class="line">stuid int not null auto_increment, </span><br><span class="line">stuname varchar(20) not null, </span><br><span class="line">gender bit DEFAULT 1, </span><br><span class="line">birth date,</span><br><span class="line">PRIMARY KEY(stuid)  -- 将字段stuid作为当前表的主键（设置主键可以间接约束这个字段的值是唯一的）</span><br><span class="line">);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">-- 4.删除表: DROP TABLE if EXISTS 表名;</span><br><span class="line">DROP TABLE if EXISTS t_student;  </span><br><span class="line">-- 清空表中的数据: TRUNCATE TABLE 表名;	</span><br><span class="line">TRUNCATE TABLE t_student;</span><br><span class="line"></span><br><span class="line">-- 5.修改表</span><br><span class="line">-- 5.1 添加列: alter TABLE 表名 add COLUMN 字段名 字段类型 约束;</span><br><span class="line">alter TABLE t_student add COLUMN score FLOAT(8,2) DEFAULT 0;</span><br><span class="line">alter TABLE t_student add COLUMN addr VARCHAR(100);</span><br><span class="line"></span><br><span class="line">-- 5.2 删除列: alter TABLE 表名 drop COLUMN 字段名;</span><br><span class="line">alter TABLE t_student drop COLUMN gender;</span><br><span class="line"></span><br><span class="line">-- 5.3 修改列: alter TABLE 表名 modify 字段名 字段类型 约束; （不重命名）</span><br><span class="line">--	   修改列: alter TABLE 表名 change 原字段名 新字段名 字段类型 约束;	（重命名）</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DML</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line">-- 1.增(添加数据&#x2F;记录)</span><br><span class="line">-- 1.1插入数据&#x2F;记录: insert into 表名 values(值1, 值2, 值3,....)  - 依次给指定表中的字段赋值</span><br><span class="line">INSERT into t_student VALUES(100, &#39;张三&#39;, 0, &#39;2019-9-23&#39;);</span><br><span class="line"></span><br><span class="line">-- 1.2插入数据&#x2F;记录: insert into 表名(字段名1,字段名2,...) values(值1, 值2,...) -以指定的顺序给指定的字段赋值  </span><br><span class="line">-- 一次插入一条记录</span><br><span class="line">INSERT into t_student(stuname, birth) VALUES(&quot;小花&quot;, date(now()));   </span><br><span class="line"></span><br><span class="line">-- 一次插入多条记录</span><br><span class="line">INSERT into t_student(stuname, birth) VALUES</span><br><span class="line">(&quot;小花&quot;, date(now())),</span><br><span class="line">(&#39;小明&#39;, &#39;2018-9-8&#39;),</span><br><span class="line">(&#39;路飞&#39;, &#39;1999-12-16&#39;),</span><br><span class="line">(&#39;佐助&#39;, &#39;2000-10-12&#39;);</span><br><span class="line"></span><br><span class="line">-- 值的问题: sql中是数字对应的值直接写，字符串需要使用引号引起来，bit类型的值只有0或者1, 时间可以用内容是满足时间格式字符串也可以是通过时间函数获取的值</span><br><span class="line">-- 时间函数: now() - 当前时间  date(now()) - 当前日期   year(now()) - 当前年   month(now()) - 当前月 ....  </span><br><span class="line"></span><br><span class="line">-- 2.删（删除数据&#x2F;记录） </span><br><span class="line">-- delete from 表名;    - 删除指定表中所有记录</span><br><span class="line">DELETE FROM t_student;</span><br><span class="line"></span><br><span class="line">-- delete from 表名 where 条件语句;    - 删除满足条件的记录  </span><br><span class="line">-- SQL中的条件语句: &#x3D;(判断是否相等), &lt;&gt;(不等于,和python中的!&#x3D;功能一样), &gt;, &lt;, &gt;&#x3D;, &lt;&#x3D;</span><br><span class="line">DELETE FROM t_student WHERE stuid&#x3D;100;     </span><br><span class="line">-- 删除t_student表中stuid的值等于100的记录  </span><br><span class="line"></span><br><span class="line">DELETE FROM t_student WHERE stuname&#x3D;&#39;小花&#39;;  </span><br><span class="line">-- 删除t_student表中stuname的值等于&#39;小花&#39;的记录</span><br><span class="line"></span><br><span class="line">DELETE FROM t_student WHERE stuid&lt;108;   </span><br><span class="line">-- 删除t_student表中stuid的值小于&#39;小花&#39;的记录  </span><br><span class="line"></span><br><span class="line">-- 3.改(修改数据&#x2F;记录) </span><br><span class="line">-- update 表名 set 字段1&#x3D;新值1, 字段2&#x3D;新值2,...;  	- 将指定表中所有行的指定列&#x2F;字段的值赋值为新值</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;1999-10-1&#39;, gender&#x3D;1;</span><br><span class="line"></span><br><span class="line">-- update 表名 set 字段1&#x3D;新值1, 字段2&#x3D;新值2,... where 条件语句;  -将表中满足条件的行中指定字段的值赋值为新值  </span><br><span class="line">UPDATE t_student set gender&#x3D;0 WHERE stuname&#x3D;&#39;小花&#39;;</span><br><span class="line">-- 通配符%: 表示任意个数的任意字符（包括0个）</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2000-01-01&#39; WHERE stuname LIKE &#39;小%&#39;; </span><br><span class="line">-- 修改stuname是以&#39;小&#39;开头的行对应的birth的值</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2111-01-01&#39; WHERE stuname LIKE &#39;%小%&#39;;</span><br><span class="line">-- 统配符_: 表示一个任意字符</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2444-01-01&#39; WHERE stuname LIKE &#39;小_&#39;;    --  修改stuname只有两个字符，并且第一个字符是‘小’对应的行的birth的值</span><br><span class="line">-- 注意: 通配符只针对字符串有效!  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 4.查(获取数据)</span><br><span class="line">-- 4.1直接查询</span><br><span class="line">-- select * from 表名;         		   - 获取指定表中所有行和所有的列(所有数据)</span><br><span class="line">SELECT * FROM t_student;</span><br><span class="line"></span><br><span class="line">-- select 字段名1,字段名2,... from 表名;   - 获取指定表中所有行指定的列 </span><br><span class="line">SELECT stuname,stuid FROM t_student;   </span><br><span class="line"></span><br><span class="line">-- select * from 表名 where 条件;         - 获取指定表中所有满足条件的行所有列的数据  </span><br><span class="line">SELECT * FROM t_student WHERE stuid&gt;115;    </span><br><span class="line"></span><br><span class="line">-- 4.2列重命名</span><br><span class="line">-- select 字段1 as 新字段1, 字段2 as 新字段2,... from 表名;</span><br><span class="line">-- 注意： 这儿的as可以省略</span><br><span class="line">SELECT stuid as &#39;学号&#39;, stuname, gender as &#39;性别&#39; FROM t_student;    </span><br><span class="line">-- 对查询结果中的stuid和gender字段进行重命名</span><br><span class="line"></span><br><span class="line">-- 4.3对查询结果重新赋值(一般针对布尔数据)</span><br><span class="line">-- select if(字段名,值1,值2) from 表名;    -查询指定字段，并且判断字段对应的值是0还是1，如果是1结果为值1，否则为值2</span><br><span class="line">-- 注意: 这儿的if的用法是MySQL专有的</span><br><span class="line">-- MySQL写法: if(字段, 新值1, 新值2)</span><br><span class="line">SELECT stuname,if(gender,&#39;男&#39;,&#39;女&#39;) as &#39;性别&#39; FROM t_student;    </span><br><span class="line">-- 通用写法:  case 字段 when 值 then 新值1 else 新值2 end</span><br><span class="line">SELECT case gender WHEN 1 THEN &#39;男&#39; ELSE &#39;女&#39; END as &#39;性别&#39; FROM t_student;</span><br><span class="line"></span><br><span class="line">-- 4.4对列进行合并</span><br><span class="line">-- select concat(字段1,字段2,...) from 表名;</span><br><span class="line">SELECT CONCAT(stuname,stuid) as &#39;name_id&#39; FROM t_student;</span><br><span class="line">SELECT CONCAT(stuname,&#39;:&#39;,stuid) as &#39;name_id&#39; FROM t_student;</span><br><span class="line"></span><br><span class="line">-- 注意: 数字和字符串数据可以合并，bit类型的数据不可以合并</span><br><span class="line">-- SELECT CONCAT(stuname,&#39;:&#39;,gender) as &#39;name_id&#39; FROM t_student;   </span><br><span class="line"></span><br><span class="line">-- 4.5模糊查询 - 查询的时候时候通过like条件来指定查询对象</span><br><span class="line">-- sql中支持逻辑运算符and(逻辑与运算)和or(逻辑或运算)，not(逻辑非)</span><br><span class="line">SELECT * FROM t_student WHERE stuname like &#39;%飞%&#39; or not stuid &lt; 110;  </span><br><span class="line"></span><br><span class="line">-- 4.6排序(先按之前的任何语法进行查询在排序)</span><br><span class="line">-- select * from 表名 order by 字段;            - 对查询结果按照指定字段的值进行升序排序 </span><br><span class="line">-- select * from 表名 order by 字段 asc;        - 对查询结果按照指定字段的值进行升序排序 </span><br><span class="line">-- select * from 表名 order by 字段 desc;       - 对查询结果按照指定字段的值进行降序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY gender;      -- 按性别升序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY stuid ASC;   -- 按学号升序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY stuid DESC;  -- 按学号降序排序</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DCL</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">-- 创建可以远程登录的root账号并为其指定口令</span><br><span class="line">create user &#39;root&#39;@&#39;%&#39; identified by &#39;123456&#39;;</span><br><span class="line"></span><br><span class="line">-- 为远程登录的root账号授权操作所有数据库所有对象的所有权限并允许其将权限再次赋予其他用户</span><br><span class="line">grant all privileges on *.* to &#39;root&#39;@&#39;%&#39; with grant option;</span><br><span class="line"></span><br><span class="line">-- 创建名为hellokitty的用户并为其指定口令</span><br><span class="line">create user &#39;hellokitty&#39;@&#39;%&#39; identified by &#39;123123&#39;;</span><br><span class="line"></span><br><span class="line">-- 将对school数据库所有对象的所有操作权限授予hellokitty</span><br><span class="line">grant all privileges on school.* to &#39;hellokitty&#39;@&#39;%&#39;;</span><br><span class="line"></span><br><span class="line">-- 召回hellokitty对school数据库所有对象的insert&#x2F;delete&#x2F;update权限</span><br><span class="line">revoke insert, delete, update on school.* from &#39;hellokitty&#39;@&#39;%&#39;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+	<div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+	</div>
+
+	
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/21/%E5%B8%B8%E7%94%A8Linux%E7%B3%BB%E7%BB%9F%E6%8C%87%E4%BB%A4/" rel="next" title="常用Linux系统指令">
+                <i class="fa fa-chevron-left"></i> 常用Linux系统指令
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/12/21/shell%E7%BC%96%E7%A8%8B/" rel="prev" title="shell编程">
+                shell编程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">YK Liu</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/%20%7C%7C%20archive">
+                
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系数据库入门"><span class="nav-number">1.</span> <span class="nav-text">关系数据库入门</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关系数据库概述"><span class="nav-number">1.1.</span> <span class="nav-text">关系数据库概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL简介"><span class="nav-number">1.2.</span> <span class="nav-text">MySQL简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL详解"><span class="nav-number">1.3.</span> <span class="nav-text">SQL详解</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YK Liu</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v4.1.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.3.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.3.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.3.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.3.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.3.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  <style>
+    .copy-btn {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 20px;
+      color: #333;
+      white-space: nowrap;
+      vertical-align: middle;
+      cursor: pointer;
+      background-color: #eee;
+      background-image: linear-gradient(#fcfcfc, #eee);
+      border: 1px solid #d5d5d5;
+      border-radius: 3px;
+      user-select: none;
+      outline: 0;
+    }
+
+    .highlight-wrap .copy-btn {
+      transition: opacity .3s ease-in-out;
+      opacity: 0;
+      padding: 2px 6px;
+      position: absolute;
+      right: 4px;
+      top: 8px;
+    }
+
+    .highlight-wrap:hover .copy-btn,
+    .highlight-wrap .copy-btn:focus {
+      opacity: 1
+    }
+
+    .highlight-wrap {
+      position: relative;
+    }
+  </style>
+  <script>
+    $('.highlight').each(function (i, e) {
+      var $wrap = $('<div>').addClass('highlight-wrap')
+      $(e).after($wrap)
+      $wrap.append($('<button>').addClass('copy-btn').append('复制').on('click', function (e) {
+        var code = $(this).parent().find('.code').find('.line').map(function (i, e) {
+          return $(e).text()
+        }).toArray().join('\n')
+        var ta = document.createElement('textarea')
+        document.body.appendChild(ta)
+        ta.style.position = 'absolute'
+        ta.style.top = '0px'
+        ta.style.left = '0px'
+        ta.value = code
+        ta.select()
+        ta.focus()
+        var result = document.execCommand('copy')
+        document.body.removeChild(ta)
+        
+          if(result)$(this).text('复制成功')
+          else $(this).text('复制失败')
+        
+        $(this).blur()
+      })).on('mouseleave', function (e) {
+        var $b = $(this).find('.copy-btn')
+        setTimeout(function () {
+          $b.text('复制')
+        }, 300)
+      }).append(e)
+    })
+  </script>
+
+
+  
+	<!-- 页面点击小红心 -->
+	<script type="text/javascript" src="/js/src/click-love.js"></script>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
