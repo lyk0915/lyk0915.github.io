@@ -1052,6 +1052,11 @@ pre .javascript .function {
 .tag-cloud a {
   display: inline-block;
   margin: 10px;
+  font-size: 20px;
+  color: #bbb;
+}
+.tag-cloud-title {
+  font-size: 15px;
 }
 .back-to-top {
   display: none;
@@ -2050,7 +2055,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #bf6340;
+  background: #36ace5;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2506,10 +2511,15 @@ img:hover {
   list-style: none;
 }
 .category-all-page .category-list-item {
-  margin: 5px 10px;
+  margin: 15px 15px;
+}
+.category-all-page .category-list-link {
+  font-size: 15px;
 }
 .category-all-page .category-list-count {
-  color: #bbb;
+  font-size: 15px;
+  margin-left: 5px;
+  color: $deepgrey;
 }
 .category-all-page .category-list-count:before {
   display: inline;

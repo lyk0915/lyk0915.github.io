@@ -1,7 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>shell编程</title>
+    <title>数据库进阶</title>
+    <url>/2019/12/25/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9B%E9%98%B6/</url>
+    <content><![CDATA[<h4 id="外键和E-R图"><a href="#外键和E-R图" class="headerlink" title="外键和E.R图"></a>外键和E.R图</h4><h5 id="约束管理"><a href="#约束管理" class="headerlink" title="约束管理"></a>约束管理</h5><ol>
+<li>添加约束</li>
+</ol>
+<p>添加普通约束的方式有两种，一种是创建表的时候直接给字段添加相应的约束，另一种是通过修改表的方式添加约束</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 1. 创建表的时候添加约束</span><br><span class="line">-- 建表的时候可以在字段类型后面加一个或者多个约束</span><br><span class="line"></span><br><span class="line">-- 2.通过添加约束索引的方式添加约束</span><br><span class="line">-- alter table 表名 add constraint 索引名 约束(字段);</span><br><span class="line">-- 说明: 索引名 - 自己随便命名;  约束 - 当前想要添加的约束(但是只支持唯一约束、主键约束和外键约束)</span><br><span class="line"></span><br><span class="line">-- 示例:</span><br><span class="line">alter table t_teacher add constraint uni_tel UNIQUE(teatel);</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>删除约束</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter table 表名 drop index 约束索引;</span><br><span class="line"></span><br><span class="line">-- 示例:</span><br><span class="line">alter table t_teacher drop index uni_tel;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="外键约束"><a href="#外键约束" class="headerlink" title="外键约束"></a>外键约束</h5><ol>
+<li><p>什么是外键：表中的某个字段的值是根据其他表中主键的值来确定的。那么这个字段就是外键<br> 多对一的外键的添加： 将外键添加到多的一方对应的表中<br> 一对一的外键的添加： 将外键随便添加到哪一方，同时添加值唯一约束<br> 多对多的外键的添加： 关系型数据库中，两张表没法实现多多的关系，需要一个中间表。(中间表有两个外键分别参照多多的两个表的主键)</p>
+</li>
+<li><p>添加外键约束</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">alter table 表名1 add constraint 外键约束索引名 foreign key (字段1) references 表名2 (字段2);</span><br><span class="line">-- 将表1中的字段1设置为外键，并且让这个外键的值参照表2中的字段2</span><br><span class="line">-- 也可在创建表的时候就添加外键约束</span><br></pre></td></tr></table></figure></li>
+<li><p>删除外键约束</p>
+</li>
+</ol>
+<p><code>alter table 表名 drop foreign key 外键索引名;</code></p>
+<h5 id="E-R图"><a href="#E-R图" class="headerlink" title="E.R图"></a>E.R图</h5><p>E-R图也称实体-联系图(Entity Relationship Diagram)，提供了表示实体类型、属性和联系的方法，用来描述现实世界的概念模型。</p>
+<p>它是描述现实世界关系概念模型的有效方法。是表示概念关系模型的一种方式。用“矩形框”表示实体型，矩形框内写明实体名称；用“椭圆图框”或圆角矩形表示实体的属性，并用“实心线段”将其与相应关系的“实体型”连接起来。</p>
+<h4 id="高级查询"><a href="#高级查询" class="headerlink" title="高级查询"></a>高级查询</h4><h5 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h5><p>max() / min() / sum() / avg() / count()</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">SELECT max(score) as max_score FROM tb_score;   -- 获取tb_score表中字段score的最大值</span><br><span class="line">SELECT min(score) as min_score FROM tb_score;   -- 获取tb_score表中字段score的最小值</span><br><span class="line">SELECT sum(score) as sum_score FROM tb_score;   -- 获取tb_score表中字段score的和</span><br><span class="line">SELECT AVG(score) as avg_score FROM tb_score;   -- 获取tb_score表中字段score的平均值</span><br><span class="line">SELECT COUNT(score) as count_score FROM tb_score WHERE score&gt;80;  -- 统计tb_score表中字段score大于80的个数</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- SELECT 字段操作  FROM 表名 WHERE 条件 GROUP BY(字段2);</span><br><span class="line"></span><br><span class="line">-- 将指定表中满足条件的记录按照字段2的进行分组(值是一样的在一个组里面), 然后再讲每个分组作为整体按照指定字段进行指定聚合操作</span><br><span class="line">-- 注意:a.字段操作的位置除了分组字段不用聚合，其他字段都必须聚合   b.分组的时候where要放到分组前对需要分组的数据进行筛选</span><br><span class="line"></span><br><span class="line">select stuid, avg(score) from tb_score group by(stuid);</span><br><span class="line"></span><br><span class="line">-- having: 分组的时候，在分组后用having代替where来对分组后的数据进行筛选！！！</span><br><span class="line"></span><br><span class="line">select stuid, max(score) from tb_score group by(stuid) having max(score)&gt;90;</span><br><span class="line">select stuid, avg(score) from tb_score group by(stuid) having avg(score)&gt;80;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="去重"><a href="#去重" class="headerlink" title="去重"></a>去重</h5><p><code>SELECT DISTINCT addr FROM t_student;</code></p>
+<h5 id="限制和分页"><a href="#限制和分页" class="headerlink" title="限制和分页"></a>限制和分页</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 限制: select * from 表名 limit N;	 -	查询的时候只获取前N条数据</span><br><span class="line">-- 偏移: select * from 表名 limit M offset N;  -  跳过前N获取M条数据</span><br><span class="line">select * from tb_record limit 5;</span><br><span class="line">select * from tb_record limit 4 offset 3; --  跳过前3条获取4条数据</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h5><p>子查询：将一个查询的结果作为另外一个查询的条件或者查询对象</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 1.将查询结果作为另外一个查询的条件</span><br><span class="line"></span><br><span class="line">-- 获取成绩大于90分的学生姓名</span><br><span class="line">select stuname from tb_student where stuid in </span><br><span class="line">(select stuid from tb_score where score&gt;90);</span><br><span class="line"></span><br><span class="line">-- 2.将一个查询的结果作为查询对象提供给另外一个查询。但是第一个查询结果需要重命名 </span><br><span class="line">select score from (SELECT stuid,score from tb_score where score&gt;80) as t2;</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h5><ol>
+<li>直接连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- select * from 表名1,表名2,表名3 where 连接条件 查询条件;</span><br><span class="line"></span><br><span class="line">-- 查询所有学生的名字和学院名字</span><br><span class="line">select stuname, collname from tb_student, tb_college where tb_student.colid&#x3D;tb_college.collid;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>内连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- SELECT * FROM 表1 inner join 表2 on 表2的连接条件 inner join 表3 on 表3的连接条件 ...;</span><br><span class="line"></span><br><span class="line">-- 查询所有学生的名字和学院名字</span><br><span class="line">select stuname, collname from tb_student inner join tb_college </span><br><span class="line">on tb_student.colid&#x3D;tb_college.collid;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>外连接<br>外连接分为左外连接、右外连接和全连接， 但是在MySQL中支持左外连接和右外连接</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 左外连接：将左表中对应字段的所有数据取出，然后再对应的右表中字段的值，如果右表对应的值不存在结果就为null </span><br><span class="line">-- 右外连接：将右表中对应字段的所有数据取出，然后再对应的左表中字段的值，如果左表对应的值不存在结果就为null </span><br><span class="line">select * from 表1 left join 表2 on 连接条件;</span><br><span class="line">select * from 表1 right join 表2 on 连接条件;</span><br><span class="line"></span><br><span class="line">-- 查询所有学生的姓名和选课数量(左外连接和子查询)</span><br><span class="line">select stuname, ifnull(c_count,0) from tb_student as t1 left join </span><br><span class="line">(select sid, count(cid) as c_count from tb_record group by (sid)) as t2 on stuid&#x3D;sid;</span><br><span class="line">-- 如果不用外连接，没有选课的学生选不出来！！</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h4><p>完成一个任务需要执行多条sql，但是要求这多个操作中只要有一个操作失败，这个任务就失败，数据全部还原；所有的操作都成功，整个任务才成功的时候就使用事务</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 开启事务环境</span><br><span class="line">begin;</span><br><span class="line"></span><br><span class="line">-- ...（需要执行的多个操作对应的sql语句）</span><br><span class="line"></span><br><span class="line">-- 提交事务(只有begin到commit之间的所有的sql都执行成功，才会执行commit; 否则执行rollback)</span><br><span class="line">COMMIT;</span><br><span class="line"></span><br><span class="line">-- 事务回滚(放弃beigin到commit之间执行成功的所有sql语句的结果)</span><br><span class="line">ROLLBACK;</span><br></pre></td></tr></table></figure>
+
+
+<h4 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h4><p>视图是关系型数据库中将一组查询指令构成的结果集组合成可查询的数据表的对象。简单的说，视图就是虚拟的表，但与数据表不同的是，数据表是一种实体结构，而视图是一种虚拟结构，你也可以将视图理解为保存在数据库中被赋予名字的SQL语句。</p>
+<p>使用视图可以获得以下好处：</p>
+<ul>
+<li>可以将实体数据表隐藏起来，让外部程序无法得知实际的数据结构，让访问者可以使用表的组成部分而不是整个表，降低数据库被攻击的风险。</li>
+<li>在大多数的情况下视图是只读的（更新视图的操作通常都有诸多的限制），外部程序无法直接透过视图修改数据。</li>
+<li>重用SQL语句，将高度复杂的查询包装在视图表中，直接访问该视图即可取出需要的数据；也可以将视图视为数据表进行连接查询。</li>
+<li>视图可以返回与实体数据表不同格式的数据，</li>
+</ul>
+<ol>
+<li>创建视图</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">create view 视图名 as sql查询语句;</span><br><span class="line"></span><br><span class="line">-- 示例:</span><br><span class="line">create view vw_student</span><br><span class="line">as SELECT * FROM tb_student;</span><br></pre></td></tr></table></figure>
+
+
+<ol start="2">
+<li>使用视图  - 视图在用的时候可以直接当成表来使用</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 示例:</span><br><span class="line">select * FROM vw_student;</span><br><span class="line"></span><br><span class="line">select stuname, collname from vw_student, tb_college where vw_student.colid&#x3D;tb_college.collid;</span><br></pre></td></tr></table></figure>
+
+<h4 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h4><p>索引相当于书本的目录，为表创建索引可以加速查询（用空间换时间）。</p>
+<p>索引虽然很好，但是不能滥用：</p>
+<ul>
+<li><p>索引会占用额外的空间</p>
+</li>
+<li><p>索引会让增删改变得更慢</p>
+</li>
+</ul>
+<p>如果哪个列经常被用于查询的筛选条件那么就应该在这个列上建立索引。</p>
+<p>主键上有默认索引(唯一索引)</p>
+<ol>
+<li>创建索引</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- create index 索引名 on 表名 (字段);    -- 给指定表的指定字段添加索引</span><br><span class="line">-- create unique index 索引名 on 表名 (字段);  -- 给指定表的指定字段添加唯一索引</span><br><span class="line"></span><br><span class="line">-- 示例:</span><br><span class="line">create index idx_stuname on tb_student(stuname);</span><br><span class="line">create unique index idx_stuname on tb_student(stuname);</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>删除索引</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- alter table 表名 drop index 索引名; 		-- 删除指定索引，唯一索引也是这样删</span><br><span class="line"></span><br><span class="line">-- 示例: </span><br><span class="line">alter table tb_student drop index idx_stuname;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>执行索引</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- explain： 获取执行计划</span><br><span class="line"></span><br><span class="line">explain select * from tb_student where stuid&#x3D;110;</span><br><span class="line">explain select * from tb_student where stuname&#x3D;&#39;张三&#39;;</span><br><span class="line"></span><br><span class="line">-- 注意：模糊查询如果以%和_开头，索引无效!!!</span><br><span class="line">explain select * from tb_student where stuname&#x3D;&#39;%三&#39;;  -- error</span><br><span class="line">explain select * from tb_student where stuname&#x3D;&#39;_三&#39;;  -- error</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>mysql</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>shell编程基础</title>
     <url>/2019/12/21/shell%E7%BC%96%E7%A8%8B/</url>
     <content><![CDATA[<h4 id="shell编程"><a href="#shell编程" class="headerlink" title="shell编程"></a>shell编程</h4><p>Shell脚本，是一种为shell编写的脚本程序。</p>
 <p>Shell编程跟JavaScript、Python编程一样，只要有一个能编写代码的文本编辑器和一个能解释执行的脚本解释器就可以了。</p>
@@ -111,7 +221,7 @@
   <entry>
     <title>关系数据库入门</title>
     <url>/2019/12/21/%E5%85%B3%E7%B3%BB%E6%95%B0%E6%8D%AE%E5%BA%93%E5%85%A5%E9%97%A8/</url>
-    <content><![CDATA[<h2 id="关系数据库入门"><a href="#关系数据库入门" class="headerlink" title="关系数据库入门"></a>关系数据库入门</h2><h3 id="关系数据库概述"><a href="#关系数据库概述" class="headerlink" title="关系数据库概述"></a>关系数据库概述</h3><ol>
+    <content><![CDATA[<h3 id="关系数据库概述"><a href="#关系数据库概述" class="headerlink" title="关系数据库概述"></a>关系数据库概述</h3><ol>
 <li>数据持久化 - 将数据保存到能够长久保存数据的存储介质中，在掉电的情况下数据也不会丢失。</li>
 </ol>
 <ul>
@@ -155,13 +265,12 @@
 <ul>
 <li>接下来可以按照如下所示的顺序用RPM（Redhat Package Manager）工具安装MySQL。</li>
 </ul>
-<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">mysql-community-common-5</span><span class="selector-class">.7</span><span class="selector-class">.26-1</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">mysql-community-libs-5</span><span class="selector-class">.7</span><span class="selector-class">.26-1</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">mysql-community-client-5</span><span class="selector-class">.7</span><span class="selector-class">.26-1</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></span><br><span class="line"><span class="selector-tag">rpm</span> <span class="selector-tag">-ivh</span> <span class="selector-tag">mysql-community-server-5</span><span class="selector-class">.7</span><span class="selector-class">.26-1</span><span class="selector-class">.el7</span><span class="selector-class">.x86_64</span><span class="selector-class">.rpm</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rpm -ivh mysql-community-common-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-libs-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-client-5.7.26-1.el7.x86_64.rpm</span><br><span class="line">rpm -ivh mysql-community-server-5.7.26-1.el7.x86_64.rpm</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>接下来启动MySQL服务器</li>
 </ul>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line">启动服务器：</span><br><span class="line">systemctl start mysqld /<span class="built_in"> service </span>mysqld start</span><br><span class="line">关闭服务器：</span><br><span class="line">systemctl stop mysqld /<span class="built_in"> service </span>mysqld stop</span><br><span class="line">重启服务器：</span><br><span class="line">systemctl restart mysqld</span><br></pre></td></tr></table></figure>
-
+<p>启动服务器：<br><code>systemctl start mysqld / service mysqld start</code><br>关闭服务器：<br><code>systemctl stop mysqld / service mysqld stop</code><br>重启服务器：<br><code>systemctl restart mysqld</code></p>
 <ul>
 <li>查看运行状态和网络状态</li>
 </ul>
@@ -182,7 +291,7 @@
 <p>这里有个问题，新密码设置的时候如果设置的过于简单会报错；原因是因为MySQL有密码设置的规范，具体是与validate_password_policy的值有关，可以降低密码强度。</p>
 <ul>
 <li><p>密码强度设为最低，长度为6，就可以修改密码了</p>
-<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="builtin-name">set</span> global <span class="attribute">validate_password_policy</span>=0;</span><br><span class="line"><span class="builtin-name">set</span> global <span class="attribute">validate_password_length</span>=6;</span><br><span class="line">ALTER<span class="built_in"> USER </span><span class="string">'root'</span>@<span class="string">'localhost'</span> IDENTIFIED BY <span class="string">'新密码'</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">set global validate_password_policy&#x3D;0;</span><br><span class="line">set global validate_password_length&#x3D;6;</span><br><span class="line">ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;新密码&#39;;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>此时的root用户是没有权限的，接下来创建远程连接用户并赋予用户权限</p>
 </li>
@@ -215,9 +324,13 @@
 </ul>
 <p><code>select database();</code></p>
 <ul>
-<li>查看当前版本</li>
+<li>查看表的结构</li>
 </ul>
-<p><code>select version();</code></p>
+<p><code>desc 表名;</code></p>
+<ul>
+<li>查看当前用户</li>
+</ul>
+<p><code>select user();</code></p>
 <ul>
 <li>查看当前时间</li>
 </ul>
@@ -225,45 +338,38 @@
 <ul>
 <li>显示数据库的创建和数据表的创建</li>
 </ul>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">database</span> 数据库名;</span><br><span class="line"><span class="keyword">show</span> <span class="keyword">create</span> <span class="keyword">table</span> 数据表名;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">show create database 数据库名;</span><br><span class="line">show create table 数据表名;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>获取帮助</li>
 </ul>
-<figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">? contents;</span><br><span class="line">? <span class="keyword">functions</span>;</span><br><span class="line">? <span class="type">numeric</span> <span class="keyword">functions</span>;</span><br><span class="line">? round;</span><br><span class="line"></span><br><span class="line">? data <span class="keyword">types</span>;</span><br><span class="line">? longblob;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">? contents;</span><br><span class="line">? functions;</span><br><span class="line">? numeric functions;</span><br><span class="line">? round;</span><br><span class="line"></span><br><span class="line">? data types;</span><br><span class="line">? longblob;</span><br></pre></td></tr></table></figure>
 
 
-<h3 id="SQL详解"><a href="#SQL详解" class="headerlink" title="SQL详解"></a>SQL详解</h3><p><strong>基本操作</strong></p>
-<p>我们通常可以将SQL分为三类：DDL（数据定义语言）、DML（数据操作语言）和DCL（数据控制语言）。<br>DDL主要用于创建（create）、删除（drop）、修改（alter）数据库中的对象，比如创建、删除和修改二维表；<br>DML主要负责插入数据（insert）、删除数据（delete）、更新数据（update）和查询（select）；<br>DCL通常用于授予权限（grant）和召回权限（revoke）。</p>
+<h3 id="SQL基本语法"><a href="#SQL基本语法" class="headerlink" title="SQL基本语法"></a>SQL基本语法</h3><p>我们通常可以将SQL分为三类：DDL（数据定义语言）、DML（数据操作语言）和DCL（数据控制语言）。<br>DDL主要用于创建（create）、删除（drop）、修改（alter）数据库中的对象，比如创建、删除和修改二维表；<br>DML主要负责插入数据（insert）、删除数据（delete）、更新数据（update）和查询（select）；<br>DCL通常用于授予权限（grant）和召回权限（revoke）。</p>
 <blockquote>
-<p>说明：SQL是不区分大小写的语言</p>
+<p>说明：SQL是不区分大小写的语言；每条SQL语句必须以分号结束</p>
 </blockquote>
-<ol>
-<li><p>DDL</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 0. 删除数据库: drop database 数据库名;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">DATABASE</span> school;   <span class="comment">-- 直接删除指定数据库</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">DATABASE</span> <span class="keyword">if</span> <span class="keyword">EXISTS</span> school;   <span class="comment">-- 如果指定的数据库存在就删除数据库</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 1.创建数据库: create database 数据库名;</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> school;  <span class="comment">-- 直接创建指定数据库</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">EXISTS</span> school;  </span><br><span class="line"><span class="comment">-- 当指定数据库不存在的时候才创建数据库</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">database</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">EXISTS</span> school <span class="keyword">default</span> <span class="keyword">charset</span> utf8;   </span><br><span class="line"><span class="comment">-- 创建数据库的时候设置字符集编码方式为utf8,让数据库支持中文数据的存储</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 2.使用/切换/数据库: use 数据库名;</span></span><br><span class="line"><span class="keyword">use</span> school;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 3.新建表: create table if not exists 表名(字段名1 类型1, 字段2 类型2,...);</span></span><br><span class="line"><span class="comment">-- 注意： a. 表名一般需要加前缀't'或者'tb'    </span></span><br><span class="line">		 b.字段用来确定表中要存储哪些数据，字段名随便命名但是不能是关键字  </span><br><span class="line">		 c.数据类型必须是MySQL支持的数据类型</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 常用数据类型: int-整数, char(size)-定长字符串, varchar(size)-不定长字符串, text-字符串, bit-布尔, date-日期</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">EXISTS</span> t_student(stuid <span class="built_in">int</span>, stuname <span class="built_in">varchar</span>(<span class="number">20</span>), gender <span class="built_in">bit</span>, birth <span class="built_in">date</span>);  </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 新建表并且添加约束: create table if not exists 表名(字段名1 类型1 约束1, 字段2 类型2 约束2,...);</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 常见约束: not null - 不为空,  default  - 设置默认值,  unique - 值唯一,  primary key - 主键约束 </span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 主键约束:  主键的值可以确定列表中唯一一条记录(通过一个主键值可以找到表中的唯一一条记录)</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 注意: auto_increment只针对主键有效,并且主键的类型是整型;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="keyword">if</span> <span class="keyword">not</span> <span class="keyword">EXISTS</span> t_student</span><br><span class="line">(</span><br><span class="line">stuid <span class="built_in">int</span> <span class="keyword">not</span> <span class="literal">null</span> auto_increment, </span><br><span class="line">stuname <span class="built_in">varchar</span>(<span class="number">20</span>) <span class="keyword">not</span> <span class="literal">null</span>, </span><br><span class="line">gender <span class="built_in">bit</span> <span class="keyword">DEFAULT</span> <span class="number">1</span>, </span><br><span class="line">birth <span class="built_in">date</span>,</span><br><span class="line">PRIMARY <span class="keyword">KEY</span>(stuid)  <span class="comment">-- 将字段stuid作为当前表的主键（设置主键可以间接约束这个字段的值是唯一的）</span></span><br><span class="line">);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.删除表: DROP TABLE if EXISTS 表名;</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">if</span> <span class="keyword">EXISTS</span> t_student;  </span><br><span class="line"><span class="comment">-- 清空表中的数据: TRUNCATE TABLE 表名;	</span></span><br><span class="line"><span class="keyword">TRUNCATE</span> <span class="keyword">TABLE</span> t_student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 5.修改表</span></span><br><span class="line"><span class="comment">-- 5.1 添加列: alter TABLE 表名 add COLUMN 字段名 字段类型 约束;</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">TABLE</span> t_student <span class="keyword">add</span> <span class="keyword">COLUMN</span> score <span class="built_in">FLOAT</span>(<span class="number">8</span>,<span class="number">2</span>) <span class="keyword">DEFAULT</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">TABLE</span> t_student <span class="keyword">add</span> <span class="keyword">COLUMN</span> addr <span class="built_in">VARCHAR</span>(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 5.2 删除列: alter TABLE 表名 drop COLUMN 字段名;</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">TABLE</span> t_student <span class="keyword">drop</span> <span class="keyword">COLUMN</span> gender;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 5.3 修改列: alter TABLE 表名 modify 字段名 字段类型 约束; （不重命名）</span></span><br><span class="line"><span class="comment">--	   修改列: alter TABLE 表名 change 原字段名 新字段名 字段类型 约束;	（重命名）</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>DML</p>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 1.增(添加数据/记录)</span></span><br><span class="line"><span class="comment">-- 1.1插入数据/记录: insert into 表名 values(值1, 值2, 值3,....)  - 依次给指定表中的字段赋值</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">into</span> t_student <span class="keyword">VALUES</span>(<span class="number">100</span>, <span class="string">'张三'</span>, <span class="number">0</span>, <span class="string">'2019-9-23'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 1.2插入数据/记录: insert into 表名(字段名1,字段名2,...) values(值1, 值2,...) -以指定的顺序给指定的字段赋值  </span></span><br><span class="line"><span class="comment">-- 一次插入一条记录</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">into</span> t_student(stuname, birth) <span class="keyword">VALUES</span>(<span class="string">"小花"</span>, <span class="built_in">date</span>(<span class="keyword">now</span>()));   </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 一次插入多条记录</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">into</span> t_student(stuname, birth) <span class="keyword">VALUES</span></span><br><span class="line">(<span class="string">"小花"</span>, <span class="built_in">date</span>(<span class="keyword">now</span>())),</span><br><span class="line">(<span class="string">'小明'</span>, <span class="string">'2018-9-8'</span>),</span><br><span class="line">(<span class="string">'路飞'</span>, <span class="string">'1999-12-16'</span>),</span><br><span class="line">(<span class="string">'佐助'</span>, <span class="string">'2000-10-12'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 值的问题: sql中是数字对应的值直接写，字符串需要使用引号引起来，bit类型的值只有0或者1, 时间可以用内容是满足时间格式字符串也可以是通过时间函数获取的值</span></span><br><span class="line"><span class="comment">-- 时间函数: now() - 当前时间  date(now()) - 当前日期   year(now()) - 当前年   month(now()) - 当前月 ....  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 2.删（删除数据/记录） </span></span><br><span class="line"><span class="comment">-- delete from 表名;    - 删除指定表中所有记录</span></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> t_student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- delete from 表名 where 条件语句;    - 删除满足条件的记录  </span></span><br><span class="line"><span class="comment">-- SQL中的条件语句: =(判断是否相等), &lt;&gt;(不等于,和python中的!=功能一样), &gt;, &lt;, &gt;=, &lt;=</span></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> t_student <span class="keyword">WHERE</span> stuid=<span class="number">100</span>;     </span><br><span class="line"><span class="comment">-- 删除t_student表中stuid的值等于100的记录  </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> t_student <span class="keyword">WHERE</span> stuname=<span class="string">'小花'</span>;  </span><br><span class="line"><span class="comment">-- 删除t_student表中stuname的值等于'小花'的记录</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> t_student <span class="keyword">WHERE</span> stuid&lt;<span class="number">108</span>;   </span><br><span class="line"><span class="comment">-- 删除t_student表中stuid的值小于'小花'的记录  </span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 3.改(修改数据/记录) </span></span><br><span class="line"><span class="comment">-- update 表名 set 字段1=新值1, 字段2=新值2,...;  	- 将指定表中所有行的指定列/字段的值赋值为新值</span></span><br><span class="line"><span class="keyword">UPDATE</span> t_student <span class="keyword">set</span> birth=<span class="string">'1999-10-1'</span>, gender=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- update 表名 set 字段1=新值1, 字段2=新值2,... where 条件语句;  -将表中满足条件的行中指定字段的值赋值为新值  </span></span><br><span class="line"><span class="keyword">UPDATE</span> t_student <span class="keyword">set</span> gender=<span class="number">0</span> <span class="keyword">WHERE</span> stuname=<span class="string">'小花'</span>;</span><br><span class="line"><span class="comment">-- 通配符%: 表示任意个数的任意字符（包括0个）</span></span><br><span class="line"><span class="keyword">UPDATE</span> t_student <span class="keyword">set</span> birth=<span class="string">'2000-01-01'</span> <span class="keyword">WHERE</span> stuname <span class="keyword">LIKE</span> <span class="string">'小%'</span>; </span><br><span class="line"><span class="comment">-- 修改stuname是以'小'开头的行对应的birth的值</span></span><br><span class="line"><span class="keyword">UPDATE</span> t_student <span class="keyword">set</span> birth=<span class="string">'2111-01-01'</span> <span class="keyword">WHERE</span> stuname <span class="keyword">LIKE</span> <span class="string">'%小%'</span>;</span><br><span class="line"><span class="comment">-- 统配符_: 表示一个任意字符</span></span><br><span class="line"><span class="keyword">UPDATE</span> t_student <span class="keyword">set</span> birth=<span class="string">'2444-01-01'</span> <span class="keyword">WHERE</span> stuname <span class="keyword">LIKE</span> <span class="string">'小_'</span>;    <span class="comment">--  修改stuname只有两个字符，并且第一个字符是‘小’对应的行的birth的值</span></span><br><span class="line"><span class="comment">-- 注意: 通配符只针对字符串有效!  </span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.查(获取数据)</span></span><br><span class="line"><span class="comment">-- 4.1直接查询</span></span><br><span class="line"><span class="comment">-- select * from 表名;         		   - 获取指定表中所有行和所有的列(所有数据)</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- select 字段名1,字段名2,... from 表名;   - 获取指定表中所有行指定的列 </span></span><br><span class="line"><span class="keyword">SELECT</span> stuname,stuid <span class="keyword">FROM</span> t_student;   </span><br><span class="line"></span><br><span class="line"><span class="comment">-- select * from 表名 where 条件;         - 获取指定表中所有满足条件的行所有列的数据  </span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student <span class="keyword">WHERE</span> stuid&gt;<span class="number">115</span>;    </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.2列重命名</span></span><br><span class="line"><span class="comment">-- select 字段1 as 新字段1, 字段2 as 新字段2,... from 表名;</span></span><br><span class="line"><span class="comment">-- 注意： 这儿的as可以省略</span></span><br><span class="line"><span class="keyword">SELECT</span> stuid <span class="keyword">as</span> <span class="string">'学号'</span>, stuname, gender <span class="keyword">as</span> <span class="string">'性别'</span> <span class="keyword">FROM</span> t_student;    </span><br><span class="line"><span class="comment">-- 对查询结果中的stuid和gender字段进行重命名</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.3对查询结果重新赋值(一般针对布尔数据)</span></span><br><span class="line"><span class="comment">-- select if(字段名,值1,值2) from 表名;    -查询指定字段，并且判断字段对应的值是0还是1，如果是1结果为值1，否则为值2</span></span><br><span class="line"><span class="comment">-- 注意: 这儿的if的用法是MySQL专有的</span></span><br><span class="line"><span class="comment">-- MySQL写法: if(字段, 新值1, 新值2)</span></span><br><span class="line"><span class="keyword">SELECT</span> stuname,<span class="keyword">if</span>(gender,<span class="string">'男'</span>,<span class="string">'女'</span>) <span class="keyword">as</span> <span class="string">'性别'</span> <span class="keyword">FROM</span> t_student;    </span><br><span class="line"><span class="comment">-- 通用写法:  case 字段 when 值 then 新值1 else 新值2 end</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">case</span> gender <span class="keyword">WHEN</span> <span class="number">1</span> <span class="keyword">THEN</span> <span class="string">'男'</span> <span class="keyword">ELSE</span> <span class="string">'女'</span> <span class="keyword">END</span> <span class="keyword">as</span> <span class="string">'性别'</span> <span class="keyword">FROM</span> t_student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.4对列进行合并</span></span><br><span class="line"><span class="comment">-- select concat(字段1,字段2,...) from 表名;</span></span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(stuname,stuid) <span class="keyword">as</span> <span class="string">'name_id'</span> <span class="keyword">FROM</span> t_student;</span><br><span class="line"><span class="keyword">SELECT</span> <span class="keyword">CONCAT</span>(stuname,<span class="string">':'</span>,stuid) <span class="keyword">as</span> <span class="string">'name_id'</span> <span class="keyword">FROM</span> t_student;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 注意: 数字和字符串数据可以合并，bit类型的数据不可以合并</span></span><br><span class="line"><span class="comment">-- SELECT CONCAT(stuname,':',gender) as 'name_id' FROM t_student;   </span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.5模糊查询 - 查询的时候时候通过like条件来指定查询对象</span></span><br><span class="line"><span class="comment">-- sql中支持逻辑运算符and(逻辑与运算)和or(逻辑或运算)，not(逻辑非)</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student <span class="keyword">WHERE</span> stuname <span class="keyword">like</span> <span class="string">'%飞%'</span> <span class="keyword">or</span> <span class="keyword">not</span> stuid &lt; <span class="number">110</span>;  </span><br><span class="line"></span><br><span class="line"><span class="comment">-- 4.6排序(先按之前的任何语法进行查询在排序)</span></span><br><span class="line"><span class="comment">-- select * from 表名 order by 字段;            - 对查询结果按照指定字段的值进行升序排序 </span></span><br><span class="line"><span class="comment">-- select * from 表名 order by 字段 asc;        - 对查询结果按照指定字段的值进行升序排序 </span></span><br><span class="line"><span class="comment">-- select * from 表名 order by 字段 desc;       - 对查询结果按照指定字段的值进行降序排序</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student <span class="keyword">ORDER</span> <span class="keyword">BY</span> gender;      <span class="comment">-- 按性别升序排序</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student <span class="keyword">ORDER</span> <span class="keyword">BY</span> stuid <span class="keyword">ASC</span>;   <span class="comment">-- 按学号升序排序</span></span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> t_student <span class="keyword">ORDER</span> <span class="keyword">BY</span> stuid <span class="keyword">DESC</span>;  <span class="comment">-- 按学号降序排序</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>DCL</p>
-</li>
-</ol>
-<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- 创建可以远程登录的root账号并为其指定口令</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">'root'</span>@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'123456'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 为远程登录的root账号授权操作所有数据库所有对象的所有权限并允许其将权限再次赋予其他用户</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> *.* <span class="keyword">to</span> <span class="string">'root'</span>@<span class="string">'%'</span> <span class="keyword">with</span> <span class="keyword">grant</span> <span class="keyword">option</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建名为hellokitty的用户并为其指定口令</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">'hellokitty'</span>@<span class="string">'%'</span> <span class="keyword">identified</span> <span class="keyword">by</span> <span class="string">'123123'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 将对school数据库所有对象的所有操作权限授予hellokitty</span></span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">privileges</span> <span class="keyword">on</span> school.* <span class="keyword">to</span> <span class="string">'hellokitty'</span>@<span class="string">'%'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 召回hellokitty对school数据库所有对象的insert/delete/update权限</span></span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">insert</span>, <span class="keyword">delete</span>, <span class="keyword">update</span> <span class="keyword">on</span> school.* <span class="keyword">from</span> <span class="string">'hellokitty'</span>@<span class="string">'%'</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="DDL-数据定义语言"><a href="#DDL-数据定义语言" class="headerlink" title="DDL - 数据定义语言"></a>DDL - 数据定义语言</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 0. 删除数据库: drop database 数据库名;</span><br><span class="line">DROP DATABASE school;   -- 直接删除指定数据库</span><br><span class="line">DROP DATABASE if EXISTS school;   -- 如果指定的数据库存在就删除数据库</span><br><span class="line"></span><br><span class="line">-- 1.创建数据库: create database 数据库名;</span><br><span class="line">create database school;  -- 直接创建指定数据库</span><br><span class="line"></span><br><span class="line">CREATE database if not EXISTS school;  </span><br><span class="line">-- 当指定数据库不存在的时候才创建数据库</span><br><span class="line"></span><br><span class="line">create database if not EXISTS school default charset utf8;   </span><br><span class="line">-- 创建数据库的时候设置字符集编码方式为utf8,让数据库支持中文数据的存储</span><br><span class="line"></span><br><span class="line">-- 2.使用&#x2F;切换&#x2F;数据库: use 数据库名;</span><br><span class="line">use school;</span><br><span class="line"></span><br><span class="line">-- 3.新建表: create table if not exists 表名(字段名1 类型1, 字段2 类型2,...);</span><br><span class="line">-- 注意： a. 表名一般需要加前缀&#39;t&#39;或者&#39;tb&#39;    </span><br><span class="line">		 b.字段用来确定表中要存储哪些数据，字段名随便命名但是不能是关键字  </span><br><span class="line">		 c.数据类型必须是MySQL支持的数据类型</span><br><span class="line"></span><br><span class="line">-- 常用数据类型: int-整数, char(size)-定长字符串, varchar(size)-不定长字符串, text-字符串, bit-布尔, date-日期</span><br><span class="line"></span><br><span class="line">CREATE TABLE if not EXISTS t_student(stuid int, stuname varchar(20), gender bit, birth date);  </span><br><span class="line"></span><br><span class="line">-- 新建表并且添加约束: create table if not exists 表名(字段名1 类型1 约束1, 字段2 类型2 约束2,...);</span><br><span class="line"></span><br><span class="line">-- 常见约束: not null - 不为空,  default  - 设置默认值,  unique - 值唯一,  primary key - 主键约束 ， foregin key - 外键约束</span><br><span class="line"></span><br><span class="line">-- 主键约束:  主键的值可以确定列表中唯一一条记录(通过一个主键值可以找到表中的唯一一条记录)</span><br><span class="line"></span><br><span class="line">-- 注意: auto_increment只针对主键有效,并且主键的类型是整型;</span><br><span class="line"></span><br><span class="line">CREATE TABLE if not EXISTS t_student</span><br><span class="line">(</span><br><span class="line">stuid int not null auto_increment, </span><br><span class="line">stuname varchar(20) not null, </span><br><span class="line">gender bit DEFAULT 1, </span><br><span class="line">birth date,</span><br><span class="line">PRIMARY KEY(stuid)  -- 将字段stuid作为当前表的主键（设置主键可以间接约束这个字段的值是唯一的）</span><br><span class="line">);</span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">-- 4.删除表: DROP TABLE if EXISTS 表名;</span><br><span class="line">DROP TABLE if EXISTS t_student;  </span><br><span class="line">-- 清空表中的数据: TRUNCATE TABLE 表名;	</span><br><span class="line">TRUNCATE TABLE t_student;</span><br><span class="line"></span><br><span class="line">-- 5.修改表</span><br><span class="line">-- 5.1 添加列: alter TABLE 表名 add COLUMN 字段名 字段类型 约束;</span><br><span class="line">alter TABLE t_student add COLUMN score FLOAT(8,2) DEFAULT 0;</span><br><span class="line">alter TABLE t_student add COLUMN addr VARCHAR(100);</span><br><span class="line"></span><br><span class="line">-- 5.2 删除列: alter TABLE 表名 drop COLUMN 字段名;</span><br><span class="line">alter TABLE t_student drop COLUMN gender;</span><br><span class="line"></span><br><span class="line">-- 5.3 修改列: alter TABLE 表名 modify 字段名 字段类型 约束; （不重命名）</span><br><span class="line">--	   修改列: alter TABLE 表名 change 原字段名 新字段名 字段类型 约束;	（重命名）</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--                 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;补充&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">-- 常见数据类型:</span><br><span class="line">-- varchar(size) - 不定长字符串，size决定的是最大长度</span><br><span class="line">-- char(size) - 定长字符 </span><br><span class="line">-- text - 不限长度(最大是255个字符)</span><br><span class="line">-- int&#x2F;tinyint - 整型 (-128~127)</span><br><span class="line">-- FLOAT(size,d)&#x2F;DOUBLE(size,d)  - 小数，size-总长度， d-小数部分长度</span><br><span class="line">-- bit - 布尔，只有0或1</span><br><span class="line">-- date&#x2F;datetime&#x2F;time - 值可以是时间函数的结果，也可以时间字符串；计算或者是比较的时候内部是按时间处理的</span><br></pre></td></tr></table></figure>
+
+<h4 id="DML-数据操作语言"><a href="#DML-数据操作语言" class="headerlink" title="DML - 数据操作语言"></a>DML - 数据操作语言</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 1.增(添加数据&#x2F;记录)</span><br><span class="line">-- 1.1插入数据&#x2F;记录: insert into 表名 values(值1, 值2, 值3,....)  - 依次给指定表中的字段赋值</span><br><span class="line">INSERT into t_student VALUES(100, &#39;张三&#39;, 0, &#39;2019-9-23&#39;);</span><br><span class="line"></span><br><span class="line">-- 1.2插入数据&#x2F;记录: insert into 表名(字段名1,字段名2,...) values(值1, 值2,...) -以指定的顺序给指定的字段赋值  </span><br><span class="line">-- 一次插入一条记录</span><br><span class="line">INSERT into t_student(stuname, birth) VALUES(&quot;小花&quot;, date(now()));   </span><br><span class="line"></span><br><span class="line">-- 一次插入多条记录</span><br><span class="line">INSERT into t_student(stuname, birth) VALUES</span><br><span class="line">(&quot;小花&quot;, date(now())),</span><br><span class="line">(&#39;小明&#39;, &#39;2018-9-8&#39;),</span><br><span class="line">(&#39;路飞&#39;, &#39;1999-12-16&#39;),</span><br><span class="line">(&#39;佐助&#39;, &#39;2000-10-12&#39;);</span><br><span class="line"></span><br><span class="line">-- 值的问题: sql中是数字对应的值直接写，字符串需要使用引号引起来，bit类型的值只有0或者1, 时间可以用内容是满足时间格式字符串也可以是通过时间函数获取的值</span><br><span class="line">-- 时间函数: now() - 当前时间  date(now()) - 当前日期   year(now()) - 当前年   month(now()) - 当前月 ....  </span><br><span class="line"></span><br><span class="line">-- 2.删（删除数据&#x2F;记录） </span><br><span class="line">-- delete from 表名;    - 删除指定表中所有记录</span><br><span class="line">DELETE FROM t_student;</span><br><span class="line"></span><br><span class="line">-- delete from 表名 where 条件语句;    - 删除满足条件的记录  </span><br><span class="line">-- SQL中的条件语句: &#x3D;(判断是否相等), &lt;&gt;(不等于,和python中的!&#x3D;功能一样), &gt;, &lt;, &gt;&#x3D;, &lt;&#x3D;</span><br><span class="line">DELETE FROM t_student WHERE stuid&#x3D;100;     </span><br><span class="line">-- 删除t_student表中stuid的值等于100的记录  </span><br><span class="line"></span><br><span class="line">DELETE FROM t_student WHERE stuname&#x3D;&#39;小花&#39;;  </span><br><span class="line">-- 删除t_student表中stuname的值等于&#39;小花&#39;的记录</span><br><span class="line"></span><br><span class="line">DELETE FROM t_student WHERE stuid&lt;108;   </span><br><span class="line">-- 删除t_student表中stuid的值小于&#39;小花&#39;的记录  </span><br><span class="line"></span><br><span class="line">-- 3.改(修改数据&#x2F;记录) </span><br><span class="line">-- update 表名 set 字段1&#x3D;新值1, 字段2&#x3D;新值2,...;  	- 将指定表中所有行的指定列&#x2F;字段的值赋值为新值</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;1999-10-1&#39;, gender&#x3D;1;</span><br><span class="line"></span><br><span class="line">-- update 表名 set 字段1&#x3D;新值1, 字段2&#x3D;新值2,... where 条件语句;  -将表中满足条件的行中指定字段的值赋值为新值  </span><br><span class="line">UPDATE t_student set gender&#x3D;0 WHERE stuname&#x3D;&#39;小花&#39;;</span><br><span class="line">-- 通配符%: 表示任意个数的任意字符（包括0个）</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2000-01-01&#39; WHERE stuname LIKE &#39;小%&#39;; </span><br><span class="line">-- 修改stuname是以&#39;小&#39;开头的行对应的birth的值</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2111-01-01&#39; WHERE stuname LIKE &#39;%小%&#39;;</span><br><span class="line">-- 统配符_: 表示一个任意字符</span><br><span class="line">UPDATE t_student set birth&#x3D;&#39;2444-01-01&#39; WHERE stuname LIKE &#39;小_&#39;;    --  修改stuname只有两个字符，并且第一个字符是‘小’对应的行的birth的值</span><br><span class="line">-- 注意: 通配符只针对字符串有效!  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- 4.查(获取数据)</span><br><span class="line">-- 4.1直接查询</span><br><span class="line">-- select * from 表名;         		   - 获取指定表中所有行和所有的列(所有数据)</span><br><span class="line">SELECT * FROM t_student;</span><br><span class="line"></span><br><span class="line">-- select 字段名1,字段名2,... from 表名;   - 获取指定表中所有行指定的列 </span><br><span class="line">SELECT stuname,stuid FROM t_student;   </span><br><span class="line"></span><br><span class="line">-- select * from 表名 where 条件;         - 获取指定表中所有满足条件的行所有列的数据  </span><br><span class="line">SELECT * FROM t_student WHERE stuid&gt;115;    </span><br><span class="line"></span><br><span class="line">-- 4.2列重命名</span><br><span class="line">-- select 字段1 as 新字段1, 字段2 as 新字段2,... from 表名;</span><br><span class="line">-- 注意： 这儿的as可以省略</span><br><span class="line">SELECT stuid as &#39;学号&#39;, stuname, gender as &#39;性别&#39; FROM t_student;    </span><br><span class="line">-- 对查询结果中的stuid和gender字段进行重命名</span><br><span class="line"></span><br><span class="line">-- 4.3对查询结果重新赋值(一般针对布尔数据)</span><br><span class="line">-- select if(字段名,值1,值2) from 表名;    -查询指定字段，并且判断字段对应的值是0还是1，如果是1结果为值1，否则为值2</span><br><span class="line">-- 注意: 这儿的if的用法是MySQL专有的</span><br><span class="line">-- MySQL写法: if(字段, 新值1, 新值2)</span><br><span class="line">SELECT stuname,if(gender,&#39;男&#39;,&#39;女&#39;) as &#39;性别&#39; FROM t_student;    </span><br><span class="line">-- 通用写法:  case 字段 when 值 then 新值1 else 新值2 end</span><br><span class="line">SELECT case gender WHEN 1 THEN &#39;男&#39; ELSE &#39;女&#39; END as &#39;性别&#39; FROM t_student;</span><br><span class="line"></span><br><span class="line">-- 4.4对列进行合并</span><br><span class="line">-- select concat(字段1,字段2,...) from 表名;</span><br><span class="line">SELECT CONCAT(stuname,stuid) as &#39;name_id&#39; FROM t_student;</span><br><span class="line">SELECT CONCAT(stuname,&#39;:&#39;,stuid) as &#39;name_id&#39; FROM t_student;</span><br><span class="line"></span><br><span class="line">-- 注意: 数字和字符串数据可以合并，bit类型的数据不可以合并</span><br><span class="line">-- SELECT CONCAT(stuname,&#39;:&#39;,gender) as &#39;name_id&#39; FROM t_student;   </span><br><span class="line"></span><br><span class="line">-- 4.5模糊查询 - 查询的时候时候通过like条件来指定查询对象</span><br><span class="line">-- sql中支持逻辑运算符and(逻辑与运算)和or(逻辑或运算)，not(逻辑非)</span><br><span class="line">SELECT * FROM t_student WHERE stuname like &#39;%飞%&#39; or not stuid &lt; 110;  </span><br><span class="line"></span><br><span class="line">-- 4.6排序(先按之前的任何语法进行查询在排序)</span><br><span class="line">-- select * from 表名 order by 字段;            - 对查询结果按照指定字段的值进行升序排序 </span><br><span class="line">-- select * from 表名 order by 字段 asc;        - 对查询结果按照指定字段的值进行升序排序 </span><br><span class="line">-- select * from 表名 order by 字段 desc;       - 对查询结果按照指定字段的值进行降序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY gender;      -- 按性别升序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY stuid ASC;   -- 按学号升序排序</span><br><span class="line">SELECT * FROM t_student ORDER BY stuid DESC;  -- 按学号降序排序</span><br><span class="line"></span><br><span class="line">--                  &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;补充&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">-- 条件语句的写法:</span><br><span class="line">-- 在SQL中可以通过 &#96;where 条件语句&#96;来对操作对象进行筛选 - 筛选  </span><br><span class="line">-- a. 比较运算符： &#x3D;, &lt;&gt;, &gt;, &lt;, &gt;&#x3D;, &lt;&#x3D;</span><br><span class="line">-- 注意: 判断一个字段的值是否为空不用使用&#x3D;和&lt;&gt;(不等与), 而是使用&#96;is null&#96; 和 &#96;is not null&#96;</span><br><span class="line">SELECT addr FROM t_student;</span><br><span class="line">SELECT stuname FROM t_student WHERE addr is NULL; -- 判断是否为NULL（空）</span><br><span class="line">SELECT stuname FROM t_student WHERE addr&lt;&#x3D;&gt;NULL; -- 判断是否为NULL（空）</span><br><span class="line">SELECT stuname FROM t_student WHERE addr&#x3D;&#39;&#39;;    -- 判断是否是空串</span><br><span class="line">-- b. 逻辑运算符: and, or, not  </span><br><span class="line">-- c. where 字段名  between 值1 and 值2   --  筛选指定的字段的值在值1和值2之间</span><br><span class="line">SELECT stuname,birth FROM t_student WHERE birth BETWEEN &#39;1990-1-1&#39; AND &#39;1999-12-31&#39;;  </span><br><span class="line">-- d. where 字段名 in 集合   -- 筛选出字段值是集合中的元素;(集合是使用括号括起来里面多个值)</span><br><span class="line">SELECT * FROM t_student WHERE stuname in (&#39;小花&#39;, &#39;小明&#39;, &#39;路飞&#39;);  </span><br><span class="line">-- e. like操作</span><br></pre></td></tr></table></figure>
+
+<h4 id="DCL-数据控制语言"><a href="#DCL-数据控制语言" class="headerlink" title="DCL - 数据控制语言"></a>DCL - 数据控制语言</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">-- 创建可以远程登录的root账号并为其指定口令</span><br><span class="line">create user &#39;root&#39;@&#39;%&#39; identified by &#39;123456&#39;;</span><br><span class="line"></span><br><span class="line">-- 删除用户  - drop user 用户名;</span><br><span class="line">drop user zhangsan;</span><br><span class="line"></span><br><span class="line">-- 为远程登录的root账号授权操作所有数据库所有对象的所有权限并允许其将权限再次赋予其他用户</span><br><span class="line">grant all privileges on *.* to &#39;root&#39;@&#39;%&#39; with grant option;</span><br><span class="line"></span><br><span class="line">-- 创建名为hellokitty的用户并为其指定口令</span><br><span class="line">create user &#39;hellokitty&#39;@&#39;%&#39; identified by &#39;123123&#39;;</span><br><span class="line"></span><br><span class="line">-- 将对school数据库所有对象的所有操作权限授予hellokitty</span><br><span class="line">grant all privileges on school.* to &#39;hellokitty&#39;@&#39;%&#39;;</span><br><span class="line"></span><br><span class="line">-- 召回hellokitty对school数据库所有对象的insert&#x2F;delete&#x2F;update权限</span><br><span class="line">revoke insert, delete, update on school.* from &#39;hellokitty&#39;@&#39;%&#39;;</span><br></pre></td></tr></table></figure>
 
 
 
 ]]></content>
       <categories>
-        <category>mysql</category>
+        <category>数据库</category>
       </categories>
       <tags>
         <tag>mysql</tag>
       </tags>
   </entry>
   <entry>
-    <title>常用Linux系统指令</title>
+    <title>常用linux指令</title>
     <url>/2019/12/21/%E5%B8%B8%E7%94%A8Linux%E7%B3%BB%E7%BB%9F%E6%8C%87%E4%BB%A4/</url>
-    <content><![CDATA[<h3 id="常用linux指令"><a href="#常用linux指令" class="headerlink" title="常用linux指令"></a>常用linux指令</h3><p>命令名称 [命名参数] [命令对象]</p>
+    <content><![CDATA[<p>命令名称 [命名参数] [命令对象]</p>
 <h4 id="一、日常操作"><a href="#一、日常操作" class="headerlink" title="一、日常操作"></a>一、日常操作</h4><p>1.cd指令           -         进入指定文件夹</p>
 <p>cd  目录             -         进入指定目录(也可以是文件夹对应的路径)</p>
 <p>​                               ~相对路径 — 绝对路径</p>
@@ -308,15 +414,26 @@
 <p>ln 源路径  目标路径                -         给源路径对应的文件在目标路径下创建一个硬链接(看成一个数据的多个引用)（了解）</p>
 <p>注意: 源文件不存在的时候，软链接直接无效，硬链接变成普通文件</p>
 <p>8.快捷键</p>
-<p>ctr + f         -     前进一个字符</p>
-<p>ctr + b        -     后退一个字符</p>
-<p>ctr + a        -     回到行首</p>
-<p>ctr + e         -     回到行尾</p>
-<p>ctr + w        -     向左删除一个单词</p>
-<p>ctr + u        -     向左删除全部</p>
-<p>ctr + k        -     向右删除全部</p>
-<p>ctr + y        -     粘贴上次删除的内容</p>
-<p>ctr + l        -     清屏  </p>
+<p>ctrl + f         -     前进一个字符</p>
+<p>ctrl + b        -     后退一个字符</p>
+<p>ctrl + a        -     回到行首</p>
+<p>ctrl + e        -     回到行尾</p>
+<p>ctrl + w        -     向左删除一个单词</p>
+<p>ctrl + u        -     向左删除全部</p>
+<p>ctrl + k        -     向右删除全部</p>
+<p>ctrl + y        -     粘贴上次删除的内容</p>
+<p>ctrl + l         -     清屏  </p>
+<p>ctrl + d        -    结束输入</p>
+<p>ctrl + z         -    暂停命令放到后台</p>
+<p>ctrl + c         -     退出任务</p>
+<p>date            -    查看当前时间</p>
+<p>init 6~0       -    重启6 关机0</p>
+<p>shutdown     -    关闭服务器</p>
+<ul>
+<li>-c  取消关机</li>
+<li>-r  重启</li>
+<li>-h  定小时关机</li>
+</ul>
 <h4 id="二、进程相关指令"><a href="#二、进程相关指令" class="headerlink" title="二、进程相关指令"></a>二、进程相关指令</h4><p>1.ps指令</p>
 <p>ps                                             -         进程状态</p>
 <p>ps -aux  或者  ps ex              -         查看进程</p>
@@ -445,6 +562,7 @@
 <p>*ping  地址 </p>
 <p>ping  -i   时间    地址</p>
 <p>ping  -c  次数    地址</p>
+<p>route                                        -        显示路由表</p>
 <p>telnet  ip地址    端口             -         查看远程主机网络连接状况（需要telnet环境）</p>
 <p>dig 地址                            -         查看DNS   (需要环境支持)</p>
 <p>** wget  地址                    -         下载  </p>
@@ -475,9 +593,22 @@
 <p>c.    xz</p>
 <p>xz    文件地址                                        -        压缩指定文件（压缩后文件后缀是xz）</p>
 <p>xz    -d    压缩文件地址                        -        解压指定文件</p>
-<p>发送远程文件 - scp指令：</p>
-<p>scp 文件   root@IP地址:服务器上保存被发送文件的路径</p>
-]]></content>
+<h4 id="七、远程文件传输"><a href="#七、远程文件传输" class="headerlink" title="七、远程文件传输"></a>七、远程文件传输</h4><p>​    1.通过网络获取资源：wget &lt;获取资源的url&gt;</p>
+<figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"><span class="bullet">- </span>后台下载模式：-b</span><br><span class="line"><span class="bullet">- </span>下载到指定的目录：-O</span><br><span class="line"><span class="bullet">- </span>递归下载：-r</span><br><span class="line"><span class="bullet">- </span>发送和接受邮件：email</span><br></pre></td></tr></table></figure>
+<p>​    2.安全文件传输：sftp</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">sftp</span> root@<span class="number">118.31.103.87</span></span><br><span class="line">root@<span class="number">118.31.103.87</span><span class="string">'s passward:</span></span><br><span class="line"><span class="string">stfp&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">help</span>：显示帮助信息。</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">ls<span class="regexp">/lls：显示远端/</span>本地目录列表。</span><br></pre></td></tr></table></figure>
+<figure class="highlight vim"><table><tr><td class="code"><pre><span class="line"><span class="keyword">cd</span>/<span class="keyword">lcd</span>：切换远端/本地路径。</span><br></pre></td></tr></table></figure>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="built_in">mkdir</span>/lmkdir：创建远端/本地目录。</span><br></pre></td></tr></table></figure>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">pwd<span class="regexp">/lpwd：显示远端/</span>本地当前工作目录。</span><br></pre></td></tr></table></figure>
+<figure class="highlight actionscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">get</span>：下载文件。</span><br></pre></td></tr></table></figure>
+<figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">put</span>：上传文件；<span class="keyword">put</span> &lt;文件名&gt; &lt;路径&gt;</span><br></pre></td></tr></table></figure>
+<figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rm</span>：删除远端文件。</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">bye</span>/<span class="built_in">exit</span>/quit：退出sftp。</span><br></pre></td></tr></table></figure>
+
+<p>​    3.远程安全文件拷贝 ：scp</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">scp &lt;文件名&gt; root@&lt;主机&gt;:路径 也能实现文件传输</span><br><span class="line">例如：</span><br><span class="line">scp hello.txt root@120.77.222.217:/root/abc.txt</span><br><span class="line">拷贝多个</span><br><span class="line">scp hellokitty@1.2.3.4:/home/hellokitty/index.html root@4.3.2.1:/usr/share/sohu.html</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>linux</category>
       </categories>
