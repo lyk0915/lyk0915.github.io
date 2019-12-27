@@ -559,13 +559,12 @@
 <h4 id="五、网络管理"><a href="#五、网络管理" class="headerlink" title="五、网络管理"></a>五、网络管理</h4><p>ifconfig                                 -    查看网卡状态</p>
 <p>netstat   -natp                    -     查看网络连接状态</p>
 <p>netstat   -natp|grep  端口号            -     查看指定端口的网络连接状态    </p>
-<p>*ping  地址 </p>
+<p>ping  地址 </p>
 <p>ping  -i   时间    地址</p>
 <p>ping  -c  次数    地址</p>
 <p>route                                        -        显示路由表</p>
 <p>telnet  ip地址    端口             -         查看远程主机网络连接状况（需要telnet环境）</p>
 <p>dig 地址                            -         查看DNS   (需要环境支持)</p>
-<p>** wget  地址                    -         下载  </p>
 <h4 id="六、使用包管理工具-掌握"><a href="#六、使用包管理工具-掌握" class="headerlink" title="六、使用包管理工具(掌握)"></a>六、使用包管理工具(掌握)</h4><h5 id="包管理工具"><a href="#包管理工具" class="headerlink" title="包管理工具"></a>包管理工具</h5><p>yum     (CentOS)</p>
 <ul>
 <li>yum search：搜索软件包，例如yum search nginx。</li>
