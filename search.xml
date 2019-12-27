@@ -566,24 +566,70 @@
 <p>telnet  ip地址    端口             -         查看远程主机网络连接状况（需要telnet环境）</p>
 <p>dig 地址                            -         查看DNS   (需要环境支持)</p>
 <p>** wget  地址                    -         下载  </p>
-<h4 id="六、使用包管理工具-掌握"><a href="#六、使用包管理工具-掌握" class="headerlink" title="六、使用包管理工具(掌握)"></a>六、使用包管理工具(掌握)</h4><p>包管理工具：yum </p>
+<h4 id="六、使用包管理工具-掌握"><a href="#六、使用包管理工具-掌握" class="headerlink" title="六、使用包管理工具(掌握)"></a>六、使用包管理工具(掌握)</h4><h5 id="包管理工具"><a href="#包管理工具" class="headerlink" title="包管理工具"></a>包管理工具</h5><p>yum     (CentOS)</p>
 <ul>
 <li>yum search：搜索软件包，例如yum search nginx。</li>
 <li>yum list installed：列出已经安装的软件包，例如yum list installed | grep zlib。</li>
 <li>yum install：安装软件包，例如yum install nginx。</li>
-<li>yum remove：删除软件包，例如yum remove nginx。</li>
+<li>yum remove / yum erase：删除软件包，例如yum remove nginx。</li>
 <li>yum update：更新软件包，例如yum update可以更新所有软件包，而yum update tar只会更新tar。</li>
 <li>yum check-update：检查有哪些可以更新的软件包。</li>
 <li>yum info ：显示软件包的相关信息，例如yum info nginx。</li>
 </ul>
-<p>源代码构建安装</p>
-<ol>
+<p>rpm        (Redhat)</p>
+<ul>
+<li><p>rpm -ivh        安装</p>
+</li>
+<li><p>rpm -e           卸载软件包</p>
+</li>
+<li><p>rpm -qa        查询所有已安装的软件包</p>
+</li>
+</ul>
+<p>  <strong>参数：</strong><br>  -i    安装软件包</p>
+<p>  -v    可视化，提供更多的详细信息的输出</p>
+<p>  -h    显示安装进度</p>
+<p>  -a    查询所有已经安装的软件包</p>
+<p>  -f    查询文件所属于的软件包</p>
+<p>  -q    查询软件包（通常用来看下还未安装的软件包）</p>
+<p>  -l    显示软件包的文件列表</p>
+<p>  -d    显示被标注为文档的文件列表</p>
+<p>  -c    显示被标注为配置文件的文件列表 最后这两个用的很少了</p>
+<p>apt        (Ubuntu)</p>
+<ul>
+<li><p>apt-cache search              ——（package 搜索包）</p>
+<ul>
+<li>apt-cache show                 ——（package 获取包的相关信息，如说明、大小、版本等）</li>
+</ul>
+</li>
+<li><p>sudo apt-get install          ——（package 安装包）</p>
+</li>
+<li><p>sudo apt-get reinstall          ——（package - - reinstall 重新安装包）</p>
+</li>
+<li><p>sudo apt-get -f install         ——（强制安装?#”-f = –fix-missing”当是修复安装吧…）</p>
+</li>
+<li><p>sudo apt-get remove         ——（package 删除包）</p>
+</li>
+<li><p>sudo apt-get remove –purge          ——（package 删除包，包括删除配置文件等）</p>
+</li>
+<li><p>sudo apt-get update             ——更新源</p>
+</li>
+<li><p>sudo apt-get upgrade             ——更新已安装的包</p>
+</li>
+</ul>
+<h5 id="源代码构建安装"><a href="#源代码构建安装" class="headerlink" title="源代码构建安装"></a>源代码构建安装</h5><ol>
 <li>wget  安装包的路径        -下载安装包</li>
 <li>gunzip/tar  压缩包         - 解压、解归档</li>
 <li>(设置安装路径)</li>
 <li>cd 安装包目录 执行: make &amp;&amp; make install       -编译安装包程序</li>
 <li>给可执行文件添加软连接到usr/bin目录下            -添加快捷方式</li>
 </ol>
+<p>安装Redis官方最新版:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-5.0.7.tar.gz</span><br><span class="line">gunzip redis-5.0.7.tar.gz</span><br><span class="line">tar -xvf redis-5.0.7.tar</span><br><span class="line">cd redis-5.0.7</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>安装Git官方最新版:</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">wget https://mirrors.edge.kernel.org/pub/software/scm/git/git-2.24.1.tar.xz</span><br><span class="line">xz -d git-2.24.1.tar.xz</span><br><span class="line">tar -xf git-2.24.1.tar</span><br><span class="line">cd git-2.24.1</span><br><span class="line">yum install -y curl libcurl-devel</span><br><span class="line">./configure --prefix=/usr/local</span><br><span class="line">make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+
+
+
 <p>压缩/解压缩和归档/解归档 - <strong>gzip</strong> / <strong>gunzip</strong> / <strong>xz</strong> / <strong>tar</strong></p>
 <p> 1）归档和解归档        -        tar<br>        tar    -cvf                            归档文件地址需要归档的原文件地址-将文件进行归档操作（既可以对文件进行归档                                            也可以对文件夹归档）<br>        tar    -xvf                             归档文件地址-将指定的归档文件解归档</p>
 <p>2）压缩和解压：gzip.gunzip.xz</p>
@@ -593,9 +639,12 @@
 <p>c.    xz</p>
 <p>xz    文件地址                                        -        压缩指定文件（压缩后文件后缀是xz）</p>
 <p>xz    -d    压缩文件地址                        -        解压指定文件</p>
-<h4 id="七、远程文件传输"><a href="#七、远程文件传输" class="headerlink" title="七、远程文件传输"></a>七、远程文件传输</h4><p>​    1.通过网络获取资源：wget &lt;获取资源的url&gt;</p>
+<h4 id="七、远程文件传输"><a href="#七、远程文件传输" class="headerlink" title="七、远程文件传输"></a>七、远程文件传输</h4><ol>
+<li>通过网络获取资源：wget &lt;获取资源的url&gt;</li>
+</ol>
 <figure class="highlight asciidoc"><table><tr><td class="code"><pre><span class="line"><span class="bullet">- </span>后台下载模式：-b</span><br><span class="line"><span class="bullet">- </span>下载到指定的目录：-O</span><br><span class="line"><span class="bullet">- </span>递归下载：-r</span><br><span class="line"><span class="bullet">- </span>发送和接受邮件：email</span><br></pre></td></tr></table></figure>
-<p>​    2.安全文件传输：sftp</p>
+<ol start="2">
+<li><p>安全文件传输：sftp</p>
 <figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="attribute">sftp</span> root@<span class="number">118.31.103.87</span></span><br><span class="line">root@<span class="number">118.31.103.87</span><span class="string">'s passward:</span></span><br><span class="line"><span class="string">stfp&gt;</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">help</span>：显示帮助信息。</span><br></pre></td></tr></table></figure>
 <figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">ls<span class="regexp">/lls：显示远端/</span>本地目录列表。</span><br></pre></td></tr></table></figure>
@@ -606,8 +655,10 @@
 <figure class="highlight applescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">put</span>：上传文件；<span class="keyword">put</span> &lt;文件名&gt; &lt;路径&gt;</span><br></pre></td></tr></table></figure>
 <figure class="highlight stata"><table><tr><td class="code"><pre><span class="line"><span class="keyword">rm</span>：删除远端文件。</span><br></pre></td></tr></table></figure>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">bye</span>/<span class="built_in">exit</span>/quit：退出sftp。</span><br></pre></td></tr></table></figure>
-
-<p>​    3.远程安全文件拷贝 ：scp</p>
+</li>
+<li><p>远程安全文件拷贝 ：scp</p>
+</li>
+</ol>
 <figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">scp &lt;文件名&gt; root@&lt;主机&gt;:路径 也能实现文件传输</span><br><span class="line">例如：</span><br><span class="line">scp hello.txt root@120.77.222.217:/root/abc.txt</span><br><span class="line">拷贝多个</span><br><span class="line">scp hellokitty@1.2.3.4:/home/hellokitty/index.html root@4.3.2.1:/usr/share/sohu.html</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>linux</category>

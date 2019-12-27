@@ -1052,8 +1052,7 @@ pre .javascript .function {
 .tag-cloud a {
   display: inline-block;
   margin: 10px;
-  font-size: 20px;
-  color: #bbb;
+  color: #aaa;
 }
 .tag-cloud-title {
   font-size: 15px;
@@ -1623,7 +1622,7 @@ pre .javascript .function {
   margin-top: 2px;
 }
 .posts-expand .post-meta time {
-  border-bottom: 1px dashed #999;
+/*border-bottom: 1px dashed $grey-dark;*/
   cursor: help;
 }
 .post-meta-divider {
@@ -2055,7 +2054,7 @@ img:hover {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #36ace5;
+  background: #595460;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2183,6 +2182,7 @@ img:hover {
 }
 .footer-inner {
   text-align: center;
+  margin-buttom: 40px;
 }
 #animate {
   animation: iconAnimate 1.33s ease-in-out infinite;
